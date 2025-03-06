@@ -1,47 +1,40 @@
-package com.example.myapplication
+package com.example.mojaaplikacija
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.myapplication.ui.theme.MyApplicationTheme
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : ComponentActivity() {
+
+class MainActivity : AppCompatActivity() {
+
+    private var trenutnoVode = 0
+    private val dnevniCilj = 2000 // dnevni cilj (2000 ml)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            MyApplicationTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        setContentView(R.layout.activity_main)
+
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        val textViewProgress = findViewById<TextView>(R.id.textViewProgress)
+        val gumbDodajVodo = findViewById<Button>(R.id.btnAddWater)
+
+        progressBar.max = dnevniCilj
+        progressBar.progress = trenutnoVode
+        textViewProgress.text = "$trenutnoVode / $dnevniCilj ml"
+
+        gumbDodajVodo.setOnClickListener {
+            dodajVodo(250, progressBar, textViewProgress)
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun dodajVodo(kolicina: Int, progressBar: ProgressBar, textView: TextView) {
+        trenutnoVode += kolicina
+        if (trenutnoVode > dnevniCilj) trenutnoVode = dnevniCilj
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyApplicationTheme {
-        Greeting("Android")
+        progressBar.progress = trenutnoVode.toInt()
+        textView.text = "$trenutnoVode / $dnevniCilj ml"
     }
 }
+
